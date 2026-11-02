@@ -1,0 +1,5 @@
+{
+  "place": "none",
+  "title": "Snippets",
+  "overlay": { "kind": "window", "width": 560, "height": 460, "key": "snippets" }
+}
