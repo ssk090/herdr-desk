@@ -1,27 +1,26 @@
 # herdr-desk
 
-Two small mods for the [Herdr](https://herdr.dev) desktop app, plus the top-bar
-buttons that open them:
+One small mod for the [Herdr](https://herdr.dev) desktop app, plus the top-bar
+button that opens it:
 
 - **Snippets**: the commands you keep retyping, pinned per space. Click one and
   it is pasted into the terminal that had the keyboard, then the shelf closes.
-- **Journal**: a dated markdown note per space, collecting that day's commits,
-  pull requests, uncommitted files and agent work.
+
+![The snippet shelf in Herdr](docs/snippets.png)
 
 ## Install
 
-Ask your Herdr agent: *"install the mods from github.com/ssk090/herdr-desk"*,
-or copy them by hand:
+Ask your Herdr agent: *"install the mod from github.com/ssk090/herdr-desk"*,
+or copy it by hand:
 
 ```sh
 git clone https://github.com/ssk090/herdr-desk
-cp -R herdr-desk/mods/snippets herdr-desk/mods/journal herdr-desk/mods/desk-bar ~/.config/herdr-app/mods/
+cp -R herdr-desk/mods/snippets herdr-desk/mods/desk-bar ~/.config/herdr-app/mods/
 herdr-app check ~/.config/herdr-app/mods/snippets
-herdr-app check ~/.config/herdr-app/mods/journal
 herdr-app check ~/.config/herdr-app/mods/desk-bar
 ```
 
-### The top-bar buttons
+### The top-bar button
 
 Add one block to the `top-bar` row of your layout, before the other buttons:
 
@@ -30,63 +29,36 @@ Add one block to the `top-bar` row of your layout, before the other buttons:
   "id": "desk-bar",
   "type": "block",
   "content": { "mod": "desk-bar" },
-  "size": { "px": 66 }
+  "size": { "px": 38 }
 }
 ```
 
-That is two 28px buttons: a bolt (snippets) and a book (journal). If you would
-rather not touch the top bar, bind keys instead:
+That is one 28px button with a bolt. If you would rather not touch the top bar,
+bind a key instead:
 
 ```json
-"cmd-alt-s": "mod.open:snippets",
-"cmd-alt-j": "mod.open:journal"
+"cmd-alt-s": "mod.open:snippets"
 ```
 
 ## Snippets
 
 - Opened from the bolt, `mod.open:snippets`, or as a pane
   (`pane.split {mod: "snippets"}`).
-- **+** adds a snippet for the shown space, **✎** edits it, **×** deletes it.
+- Type a command in the field at the bottom and press Enter or Add. **✎** loads
+  a snippet back into the field to edit it, **×** deletes it.
 - Clicking a snippet writes it to the clipboard, focuses the terminal that was
   in front when the shelf opened, and sends Ctrl+V. It does not press Enter, so
   you can edit the command first.
-- Snippets live in Herdr's shared state (`shared.json`), keyed by space id, so
-  they follow across layouts and restarts but are not in any repository.
-
-## Journal
-
-- Opened from the book, `mod.open:journal`, or as a pane.
-- **Collect** walks the space's repository and writes
-  `~/.config/herdr-app/journal/<space>-<id>/<YYYY-MM-DD>.md`:
-  - commits from today, authored by your `git config user.email` (all authors
-    when that is not set)
-  - pull requests you authored and that changed today, when `gh` is available
-  - uncommitted changes
-  - each agent in the space, with the task it reported and its status
-- Only the block between `<!-- herdr-desk:start -->` and
-  `<!-- herdr-desk:end -->` is rewritten. Whatever you write under `## Notes`
-  stays.
-- Spaces on another machine are read through `herdr-core` (`git` and `gh` run
-  there); the note itself is written on this machine.
-
-### What it does not do
-
-- It does not run on its own. Nothing is collected until you open the journal or
-  press Collect.
-- Agent lines are the title and status the agent reports in the tab, not a
-  written summary.
-- PRs you only reviewed are not listed.
+- Snippets are per space, stored in Herdr's shared state (`shared.json`) keyed
+  by space id. They follow across layouts and restarts, but they are not in any
+  repository.
 
 ## Layout
 
 ```
 mods/snippets/    the shelf
-mods/journal/     the note collector and viewer
-mods/desk-bar/    the two top-bar buttons
-tests/            node tests for the note's markdown
+mods/desk-bar/    the top-bar button
 ```
-
-Run the tests with `node --test`.
 
 ## License
 
