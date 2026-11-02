@@ -1,9 +1,9 @@
 // Pinned commands for the shown space. Click one to paste it into the terminal
 // that had the keyboard when this opened, then this closes (when it is an overlay).
 
-import { View, div } from "gpui-kit";
+import { View, div, svg } from "gpui-kit";
 import { v_flex, h_flex, InputState, Input } from "gpui-base";
-import { spaces, focused, run, shared, setShared, theme, props, closeOverlay, settings, notify } from "herdr";
+import { spaces, focused, run, shared, setShared, theme, props, closeOverlay, settings, notify, openOverlay } from "herdr";
 
 const EMPTY = {};
 
@@ -114,7 +114,19 @@ export default class Snippets extends View {
       .hover((s) => s.opacity(0.88)).on_click(action).child(text);
   }
 
+  // In a top bar, with `props: { "bar": true }`, it is the button that opens it.
+  renderButton() {
+    const t = theme();
+    return h_flex().id("snippets-bar").size_full().items_center().justify_center()
+      .on_mouse_down("left", (_e, cx) => cx.stop_propagation())
+      .child(h_flex().id("snippets-open").w(28).h(28).items_center().justify_center().rounded(7)
+        .cursor_pointer().text_color(t.dim).hover((s) => s.bg(t.surface).text_color(t.foreground))
+        .on_click(() => openOverlay({ mod: "snippets", kind: "window", key: "snippets", width: 560, height: 460 }))
+        .child(svg("mods/snippets/bolt.svg").size(17)));
+  }
+
   render(cx) {
+    if (props()?.bar) return this.renderButton();
     const t = theme(), mono = settings().font_family ?? "JetBrains Mono";
     const space = spaces().find((s) => s.active) ?? null;
     const id = space?.id ?? null;

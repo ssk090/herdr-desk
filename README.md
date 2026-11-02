@@ -1,64 +1,51 @@
 # herdr-desk
 
-One small mod for the [Herdr](https://herdr.dev) desktop app, plus the top-bar
-button that opens it:
+The **Snippets** mod for the [Herdr](https://herdr.dev) desktop app: a shelf of
+the commands you keep retyping, pinned per space, one click to paste into the
+focused terminal.
 
-- **Snippets**: the commands you keep retyping, pinned per space. Click one and
-  it is pasted into the terminal that had the keyboard, then the shelf closes.
-
-![The snippet shelf in Herdr](docs/snippets.png)
+![Snippets](preview.png)
 
 ## Install
 
-Ask your Herdr agent: *"install the mod from github.com/ssk090/herdr-desk"*,
-or copy it by hand:
-
 ```sh
 git clone https://github.com/ssk090/herdr-desk
-cp -R herdr-desk/mods/snippets herdr-desk/mods/desk-bar ~/.config/herdr-app/mods/
+cp -R herdr-desk/mods/snippets ~/.config/herdr-app/mods/
 herdr-app check ~/.config/herdr-app/mods/snippets
-herdr-app check ~/.config/herdr-app/mods/desk-bar
 ```
 
-### The top-bar button
-
-Add one block to the `top-bar` row of your layout, before the other buttons:
+Add the bolt to the top bar by putting this block in the `top-bar` row of your
+layout (clone a shipped layout first if needed):
 
 ```json
 {
-  "id": "desk-bar",
+  "id": "snippets",
   "type": "block",
-  "content": { "mod": "desk-bar" },
+  "content": { "mod": "snippets", "props": { "bar": true } },
   "size": { "px": 38 }
 }
 ```
 
-That is one 28px button with a bolt. If you would rather not touch the top bar,
-bind a key instead:
+Or leave the layout alone and map a key, from `keys.json` in this repo:
 
 ```json
 "cmd-alt-s": "mod.open:snippets"
 ```
 
-## Snippets
+## Use
 
-- Opened from the bolt, `mod.open:snippets`, or as a pane
-  (`pane.split {mod: "snippets"}`).
-- Type a command in the field at the bottom and press Enter or Add. **✎** loads
-  a snippet back into the field to edit it, **×** deletes it.
-- Clicking a snippet writes it to the clipboard, focuses the terminal that was
-  in front when the shelf opened, and sends Ctrl+V. It does not press Enter, so
-  you can edit the command first.
-- Snippets are per space, stored in Herdr's shared state (`shared.json`) keyed
-  by space id. They follow across layouts and restarts, but they are not in any
-  repository.
+- The bolt, `mod.open:snippets`, or a pane (`pane.split {mod: "snippets"}`).
+- Type in the field at the bottom, Enter or Add saves it for the shown space.
+- `✎` loads a snippet back into the field; `×` deletes it.
+- Click a snippet to paste it into the terminal that was in front. It does not
+  press Enter, so you can edit the command first.
+- Snippets are per space, stored in Herdr's shared state. They survive restarts
+  but are not in any repository.
 
-## Layout
+## What it touches
 
-```
-mods/snippets/    the shelf
-mods/desk-bar/    the top-bar button
-```
+`shared.json` only. No `exec`, no `hc`, no network, no files outside the mod's
+own folder.
 
 ## License
 
